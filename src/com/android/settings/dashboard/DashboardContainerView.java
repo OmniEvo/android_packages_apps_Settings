@@ -1,0 +1,181 @@
+/*
+ * Copyright (C) 2014 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.android.settings.dashboard;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
+import com.android.settings.R;
+
+import com.android.internal.util.omni.DeviceUtils;
+
+public class DashboardContainerView extends ViewGroup {
+
+    private static final String PREF_DASHBOARD_COLUMNS = "dashboard_columns";
+    private static final String PREF_DASHBOARD_COLUMNS_RESIZE = "dashboard_columns_resize";
+    private float mCellGapX;
+    private float mCellGapY;
+
+    private int mNumRows;
+    private int mNumColumns;
+    private boolean mCompactMode;
+    private boolean mColumnsResize;
+
+    public DashboardContainerView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        final Resources res = context.getResources();
+        final int dashboardValue = res.getInteger(R.integer.dashboard_num_columns);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        // dont use a vale smaller then what the config said
+        // special case for layout-land which has a default of 2
+        //mNumColumns = Math.max(dashboardValue, Integer.valueOf(prefs.getString(PREF_DASHBOARD_COLUMNS,
+        //        Integer.toString(dashboardValue))));
+        mNumColumns = Integer.valueOf(prefs.getString(PREF_DASHBOARD_COLUMNS,Integer.toString(dashboardValue)));
+        mColumnsResize = prefs.getBoolean(PREF_DASHBOARD_COLUMNS_RESIZE, false);
+        final boolean isLandscape = res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
+        final boolean isPhone = DeviceUtils.isPhone(context);
+        final boolean isTablet = DeviceUtils.isTablet(context);
+
+        if (mColumnsResize) {
+            if (isTablet && !isLandscape) {
+                if (mNumColumns > 1) {
+                    mNumColumns = mNumColumns - 1;
+                }
+            } else {
+                if (isPhone && isLandscape) {
+                   mNumColumns = mNumColumns + 1;
+                }
+            }
+        }
+
+        mCompactMode = (isPhone && (isLandscape ? mNumColumns > 2 : mNumColumns > 1))
+                || (!isPhone && mNumColumns > 2);
+        mCellGapX = res.getDimension(mCompactMode ? R.dimen.dashboard_cell_gap_x_compact : R.dimen.dashboard_cell_gap_x);
+        mCellGapY = res.getDimension(R.dimen.dashboard_cell_gap_y);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final int width = MeasureSpec.getSize(widthMeasureSpec);
+        final int availableWidth = (int) (width - getPaddingLeft() - getPaddingRight() -
+                (mNumColumns - 1) * mCellGapX);
+        float cellWidth = (float) Math.ceil(((float) availableWidth) / mNumColumns);
+        final int N = getChildCount();
+
+        int cellHeight = 0;
+        int cursor = 0;
+
+        for (int i = 0; i < N; ++i) {
+            DashboardTileView v = (DashboardTileView) getChildAt(i);
+            if (v.getVisibility() == View.GONE) {
+                continue;
+            }
+
+            ViewGroup.LayoutParams lp = v.getLayoutParams();
+            int colSpan = v.getColumnSpan();
+            lp.width = (int) ((colSpan * cellWidth) + (colSpan - 1) * mCellGapX);
+
+            // Measure the child
+            int newWidthSpec = getChildMeasureSpec(widthMeasureSpec, 0, lp.width);
+            int newHeightSpec = getChildMeasureSpec(heightMeasureSpec, 0, lp.height);
+            v.measure(newWidthSpec, newHeightSpec);
+
+            // Save the cell height
+            if (cellHeight <= 0) {
+                cellHeight = v.getMeasuredHeight();
+            }
+
+            lp.height = cellHeight;
+
+            cursor += colSpan;
+        }
+
+        mNumRows = (int) Math.ceil((float) cursor / mNumColumns);
+        final int newHeight = (int) ((mNumRows * cellHeight) + ((mNumRows - 1) * mCellGapY)) +
+                getPaddingTop() + getPaddingBottom();
+
+        setMeasuredDimension(width, newHeight);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        final int N = getChildCount();
+        final boolean isLayoutRtl = isLayoutRtl();
+        final int width = getWidth();
+
+        int x = getPaddingStart();
+        int y = getPaddingTop();
+        int cursor = 0;
+
+        for (int i = 0; i < N; ++i) {
+            final DashboardTileView child = (DashboardTileView) getChildAt(i);
+            final ViewGroup.LayoutParams lp = child.getLayoutParams();
+            if (child.getVisibility() == GONE) {
+                continue;
+            }
+
+            final int col = cursor % mNumColumns;
+            final int colSpan = child.getColumnSpan();
+
+            final int childWidth = lp.width;
+            final int childHeight = lp.height;
+
+            int row = cursor / mNumColumns;
+
+            if (row == mNumRows - 1) {
+                child.setDividerVisibility(false);
+            }
+
+            // Push the item to the next row if it can't fit on this one
+            if ((col + colSpan) > mNumColumns) {
+                x = getPaddingStart();
+                y += childHeight + mCellGapY;
+                row++;
+            }
+
+            final int childLeft = (isLayoutRtl) ? width - x - childWidth : x;
+            final int childRight = childLeft + childWidth;
+
+            final int childTop = y;
+            final int childBottom = childTop + childHeight;
+
+            // Layout the container
+            child.layout(childLeft, childTop, childRight, childBottom);
+
+            // Offset the position by the cell gap or reset the position and cursor when we
+            // reach the end of the row
+            cursor += child.getColumnSpan();
+            if (cursor < (((row + 1) * mNumColumns))) {
+                x += childWidth + mCellGapX;
+            } else {
+                x = getPaddingStart();
+                y += childHeight + mCellGapY;
+            }
+        }
+    }
+
+    protected boolean isCompactMode() {
+        return mCompactMode;
+    }
+}
