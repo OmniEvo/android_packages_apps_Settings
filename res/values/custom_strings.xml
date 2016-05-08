@@ -158,4 +158,7 @@
      <string name="lcd_density_unsupported">Unsupported</string>
      <string name="lcd_density_restarting_ui">Restarting UI\u2026</string>
 
+    <!-- Hostname setting -->
+    <string name="device_hostname">Device hostname</string>
+
 </resources>
