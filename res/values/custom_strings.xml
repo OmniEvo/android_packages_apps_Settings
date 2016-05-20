@@ -19,7 +19,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- About phone screen,  setting option name-->
-    <string name="mod_version">Omni version</string>
+    <string name="mod_version">OmniEvo version</string>
     <string name="mod_version_default">Unknown</string>
 
     <!-- Main list strings -->
@@ -160,5 +160,8 @@
 
     <!-- Hostname setting -->
     <string name="device_hostname">Device hostname</string>
+
+    <!-- OmniEvo OTA -->
+    <string name="slimota_title">OmniEvoOTA</string>
 
 </resources>
