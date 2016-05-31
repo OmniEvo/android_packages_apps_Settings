@@ -168,5 +168,8 @@
 
     <!-- OmniEvo OTA -->
     <string name="slimota_title">OmniEvoOTA</string>
+    
+    <!-- Dev Options Enabled by Default -->
+    <string name="show_dev_already_enabled">No Need, Development settings are enabled by default.</string>    
 
 </resources>
