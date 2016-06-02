@@ -26,9 +26,8 @@
 
         <!-- OmniEvo OTA -->
         <PreferenceScreen
-               android:key="slimota"	  
-               android:title="@string/slimota_title"
-	       android:icon="@drawable/omnievo_logo">
+               android:key="slimota"
+               android:title="@string/slimota_title">
                <intent
                        android:action="android.intent.action.MAIN"
                        android:targetPackage="com.fusionjack.slimota"
