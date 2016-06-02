@@ -180,6 +180,14 @@
             </intent-filter>
         </activity>
 
+        <!-- EvoMagix Extra info -->
+        <activity android:name="com.android.settings.omni.extrainfo.MainActivity"
+                  android:theme="@android:style/Theme.Material.Dialog.NoActionBar.MinWidth">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>	
+	
         <!-- Top-level settings -->
 
         <activity android:name="Settings$WifiSettingsActivity"
