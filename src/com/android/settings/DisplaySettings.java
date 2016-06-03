@@ -81,6 +81,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
 
     private static final String KEY_SCREEN_TIMEOUT = "screen_timeout";
     private static final String KEY_LCD_DENSITY = "lcd_density";
+    private static final String THREE_FINGER_GESTURE = "three_finger_gesture";    
     private static final String KEY_DISPLAY_ROTATION = "display_rotation";
     private static final String KEY_FONT_SIZE = "font_size";
     private static final String KEY_SCREEN_SAVER = "screensaver";
@@ -117,6 +118,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
     private SwitchPreference mCameraGesturePreference;
     private SwitchPreference mCameraDoubleTapPowerGesturePreference;
     private PreferenceScreen mDozeFragement;
+    private SwitchPreference mThreeFingerGesture;    
 
     private ListPreference mLcdDensityPreference;
 
@@ -161,6 +163,7 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
         disableUnusableTimeouts(mScreenTimeoutPreference);
         updateTimeoutPreferenceDescription(currentTimeout);
 
+        mThreeFingerGesture = (SwitchPreference) findPreference(THREE_FINGER_GESTURE);        
         mFontSizePref = (WarnedListPreference) findPreference(KEY_FONT_SIZE);
         mFontSizePref.setOnPreferenceChangeListener(this);
         mFontSizePref.setOnPreferenceClickListener(this);
@@ -468,6 +471,13 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
                     getContentResolver(), CAMERA_DOUBLE_TAP_POWER_GESTURE_DISABLED, 0);
             mCameraDoubleTapPowerGesturePreference.setChecked(value == 0);
         }
+
+        // Three-finger gesture
+        if (mThreeFingerGesture != null) {
+            mThreeFingerGesture.setChecked(Settings.System.getInt(getContentResolver(),
+                Settings.System.THREE_FINGER_GESTURE,0) == 1);
+            mThreeFingerGesture.setOnPreferenceChangeListener(this);
+        }        
     }
 
     private void updateScreenSaverSummary() {
@@ -658,6 +668,10 @@ public class DisplaySettings extends SettingsPreferenceFragment implements
             } catch (NumberFormatException e) {
                 Log.e(TAG, "could not persist night mode setting", e);
             }
+        }            
+        if (preference == mThreeFingerGesture) {
+            boolean value = (Boolean) objValue;
+            Settings.System.putInt(getContentResolver(), THREE_FINGER_GESTURE, value ? 1: 0);           
         }
         return true;
     }

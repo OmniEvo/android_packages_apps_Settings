@@ -31,7 +31,12 @@
                 android:title="@string/auto_brightness_title"
                 settings:keywords="@string/keywords_display_auto_brightness"
                 android:summary="@string/auto_brightness_summary"
-                android:persistent="false" />
+                android:persistent="false" />	
+	
+        <ListPreference
+                 android:key="lcd_density"
+                 android:title="@string/lcd_density"
+                 android:persistent="false" />	
 
         <ListPreference
             android:key="night_mode"
@@ -41,7 +46,13 @@
             android:persistent="false"
             android:entries="@array/night_mode_entries"
             android:entryValues="@array/night_mode_values" />
-
+	
+        <SwitchPreference
+            android:key="three_finger_gesture"
+            android:title="@string/three_finger_gesture"
+            android:summary="@string/three_finger_gesture_summary"
+            android:defaultValue="false" />	
+	
         <PreferenceScreen
                 android:key="wallpaper"
                 android:title="@string/wallpaper_settings_title"
@@ -60,11 +71,6 @@
                 android:persistent="false"
                 android:entries="@array/screen_timeout_entries"
                 android:entryValues="@array/screen_timeout_values" />
-
-        <ListPreference
-                 android:key="lcd_density"
-                 android:title="@string/lcd_density"
-                 android:persistent="false" />
 
         <SwitchPreference
                 android:key="camera_gesture"
@@ -112,6 +118,6 @@
                 android:key="wifi_display"
                 android:title="@string/wifi_display_settings_title"
                 settings:keywords="@string/keywords_display_cast_screen"
-                android:fragment="com.android.settings.wfd.WifiDisplaySettings" />
-
-</PreferenceScreen>
+                android:fragment="com.android.settings.wfd.WifiDisplaySettings" />  
+ 
+ </PreferenceScreen>
