@@ -294,7 +294,7 @@ public class SettingsActivity extends Activity
             R.id.button_settings,
             R.id.interface_bars,
             R.id.interface_lockscreen,
-            R.id.interface_more
+            R.id.interface_more,
             R.id.bitsyko_layers,
     };
 
