@@ -184,5 +184,11 @@
     <string name="bitsyko_layers">Layers Manager</string> 
 
     <!-- Font size sample text -->
-    <string name="font_size_sample">Font Size</string>    
+    <string name="font_size_sample">Font Size</string>  
+
+    <!-- Battery Saver Settings -->
+    <!-- Disable Battery Saver Warning Color -->
+    <string name="battery_saver_color_title">Warning color</string>
+    <string name="battery_saver_color_summary">Enable orange status and navigation bars when battery saver is activated</string>
+      
 </resources>
