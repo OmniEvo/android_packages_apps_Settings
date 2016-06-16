@@ -21,8 +21,8 @@
         <Preference android:key="mod_version"
                 style="?android:preferenceInformationStyle"
                 android:title="@string/mod_version"
-                android:summary="@string/mod_version_default"
-		android:icon="@drawable/omnirom_logo" />
+                android:summary="@string/mod_version_default" />
+<!--		android:icon="@drawable/omnirom_logo" /> -->
 
         <!-- OmniEvo OTA -->
         <PreferenceScreen
