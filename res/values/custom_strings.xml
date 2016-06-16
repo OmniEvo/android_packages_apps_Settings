@@ -190,5 +190,10 @@
     <!-- Disable Battery Saver Warning Color -->
     <string name="battery_saver_color_title">Warning color</string>
     <string name="battery_saver_color_summary">Enable orange status and navigation bars when battery saver is activated</string>
+
+    <!-- About phone screen, processor info label  [CHAR LIMIT=40] -->
+ +    <string name="processor_info">Processor</string>
       
+    <!-- RAM: Memory Info -->
+    <string name="mem_info">RAM</string>
 </resources>
