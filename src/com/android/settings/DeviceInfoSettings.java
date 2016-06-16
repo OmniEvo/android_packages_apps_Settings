@@ -468,12 +468,13 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
         };
 
     /**
-     * Returns the Hardware value in /proc/cpuinfo, else returns "Unknown".
+     * Returns the Hardware or Processor value in /proc/cpuinfo,
+     * else returns "Unknown" (regex can change with a device overlay)
      * @return a string that describes the processor
      */
-    private static String getDeviceProcessorInfo() {
-        // Hardware : XYZ
-        final String PROC_HARDWARE_REGEX = "Hardware\\s*:\\s*(.*?)(?:\\(.*)?$"; /* hardware string */
+    private String getDeviceProcessorInfo() {
+        // Hardware or Processor : XYZ
+        final String PROC_REGEX = getResources().getString(R.string.processor_regex); /* hardware or processor string */
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(FILENAME_PROC_CPUINFO));
@@ -481,11 +482,9 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
 
             try {
                 while (null != (cpuinfo = reader.readLine())) {
-                    if (cpuinfo.startsWith("Hardware")) {
-                        Matcher m = Pattern.compile(PROC_HARDWARE_REGEX).matcher(cpuinfo);
-                        if (m.matches()) {
-                            return m.group(1);
-                        }
+                    Matcher m = Pattern.compile(PROC_REGEX).matcher(cpuinfo);
+                    if (m.matches()) {
+                        return m.group(1);
                     }
                 }
                 return "Unknown";

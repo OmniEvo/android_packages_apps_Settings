@@ -193,6 +193,7 @@
 
     <!-- About phone screen, processor info label  [CHAR LIMIT=40] -->
     <string name="processor_info">Processor</string>
+    <string name="processor_regex" translatable="false">Hardware\\s*:\\s*(.*?)(?:\\(.*)?$</string>
       
     <!-- RAM: Memory Info -->
     <string name="mem_info">RAM</string>
