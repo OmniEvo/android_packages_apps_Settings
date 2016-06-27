@@ -328,10 +328,13 @@
 
         <!-- PerformanceControl -->
         <dashboard-tile
-                android:id="@+id/performance_controls"
+                android:id="@+id/kernel_auditor"
                 android:title="@string/performance_settings"
-                android:fragment="com.brewcrewfoo.performance.activities.MainActivity"
-                android:icon="@drawable/ic_settings_performance_tile" />
+                android:icon="@drawable/ic_settings_performance_tile" >
+                <intent
+                    android:action="android.intent.action.MAIN"
+                    android:targetPackage="com.grarak.kerneladiutor"
+                    android:targetClass="com.grarak.kerneladiutor.MainActivity" />
 
         <!-- About Device -->
         <dashboard-tile
